@@ -23,9 +23,9 @@ pq-lits/
 ├── pq_lits_benchmark.py                # PQ-LITS protocol benchmark suite
 ├── requirements.txt                    # Python dependencies
 ├── data/
-│   ├── GCS_A_telemetry.csv             # GCS-A telemetry (5000 samples, 40% GPS spoof)
-│   ├── GCS_B_telemetry.csv             # GCS-B telemetry (5000 samples, 40% cmd injection)
-│   ├── GCS_C_telemetry.csv             # GCS-C telemetry (5000 samples, balanced attacks)
+│   ├── GCS_A_telemetry.csv             # GCS-A telemetry (5000 samples)
+│   ├── GCS_B_telemetry.csv             # GCS-B telemetry (5000 samples)
+│   ├── GCS_C_telemetry.csv             # GCS-C telemetry (5000 samples)
 │   └── combined_telemetry.csv          # All three GCS datasets combined
 ├── results/
 │   ├── PQ-LITS_Protocol_Benchmark_Suite_Results
@@ -158,10 +158,21 @@ Each GCS telemetry file contains 5000 samples with 18 columns:
 | label | 0 = normal, 1 = GPS spoofing, 2 = RF jamming, 3 = command injection |
 | attack_name | normal, gps_spoofing, rf_jamming, cmd_injection |
 
-The non-IID distribution across clients:
-- **GCS-A:** 50% normal, 40% GPS spoofing, 10% RF jamming, 0% command injection
-- **GCS-B:** 50% normal, 10% GPS spoofing, 0% RF jamming, 40% command injection
-- **GCS-C:** 55% normal, 15% GPS spoofing, 15% RF jamming, 15% command injection
+The non-IID session-selection distribution used by the generator is:
+
+| Client | Normal | GPS spoofing | RF jamming | Command injection |
+|--------|--------|--------------|------------|-------------------|
+| GCS-A | 50% | 40% | 10% | 0% |
+| GCS-B | 50% | 10% | 0% | 40% |
+| GCS-C | 55% | 15% | 15% | 15% |
+
+Because attacks are injected only during the attack window of a compromised session, the final CSV row counts are:
+
+| Client | Normal | GPS spoofing | RF jamming | Command injection |
+|--------|--------|--------------|------------|-------------------|
+| GCS-A | 2900 | 1750 | 350 | 0 |
+| GCS-B | 3600 | 350 | 0 | 1050 |
+| GCS-C | 3600 | 700 | 350 | 350 |
 
 ## Cryptographic Primitives
 
