@@ -2,9 +2,9 @@
 
 This repository contains the complete implementation and experimental pipeline for the paper:
 
-> **Quantum-Safe Drone Security: Authenticated Key Exchange and Privacy-Preserving Intrusion Detection for LITS**
+> **Quantum Safe Drone Security - Authenticated Key Exchange and Privacy Preserving Intrusion Detection for LITS**
 >
-> Shafiq Ahmed, Mohammad Hossein Anisi, Ayesha Iqbal, Zakawat Liaqat, Mohammed Amoon, Saru Kumari
+> Shafiq Ahmed, Mohammad Hossein Anisi, Ayesha Iqbal, Abhirami Suresh, Mohammed Amoon, Kadambri Agarwal
 
 ## Overview
 
@@ -155,13 +155,13 @@ Each GCS telemetry file contains 5000 samples with 18 columns:
 | num_satellites | GPS satellite count |
 | battery_voltage | Battery level (V) |
 | cmd_rate | Command reception rate (Hz) |
-| label | 0 = normal, 1 = attack |
-| attack_name | normal, gps_spoof, rf_jam, cmd_injection |
+| label | 0 = normal, 1 = GPS spoofing, 2 = RF jamming, 3 = command injection |
+| attack_name | normal, gps_spoofing, rf_jamming, cmd_injection |
 
 The non-IID distribution across clients:
-- **GCS-A:** 40% GPS spoofing, 10% RF jamming, 10% command injection
-- **GCS-B:** 10% GPS spoofing, 10% RF jamming, 40% command injection
-- **GCS-C:** 15% each attack type (balanced)
+- **GCS-A:** 50% normal, 40% GPS spoofing, 10% RF jamming, 0% command injection
+- **GCS-B:** 50% normal, 10% GPS spoofing, 0% RF jamming, 40% command injection
+- **GCS-C:** 55% normal, 15% GPS spoofing, 15% RF jamming, 15% command injection
 
 ## Cryptographic Primitives
 
@@ -179,10 +179,10 @@ If you use this code or dataset in your research, please cite:
 
 ```bibtex
 @article{ahmed2026pqlits,
-  title={Quantum-Safe Drone Security: Authenticated Key Exchange and 
-         Privacy-Preserving Intrusion Detection for LITS},
+  title={Quantum Safe Drone Security - Authenticated Key Exchange and
+         Privacy Preserving Intrusion Detection for LITS},
   author={Ahmed, Shafiq and Anisi, Mohammad Hossein and Iqbal, Ayesha 
-          and Liaqat, Zakawat and Amoon, Mohammed and Kumari, Saru},
+          and Suresh, Abhirami and Amoon, Mohammed and Agarwal, Kadambri},
   journal={},
   year={2026}
 }
@@ -190,7 +190,7 @@ If you use this code or dataset in your research, please cite:
 
 ## Acknowledgements
 
-This work was supported by the Researchers Supporting Project (ORF-2026-968), King Saud University, Riyadh, Saudi Arabia.
+This work was supported by the Ongoing Research Funding Program (ORF-2026-968), King Saud University, Riyadh, Saudi Arabia.
 
 ## License
 
