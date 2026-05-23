@@ -1,0 +1,31 @@
+From your benchmark output, we have protocol message sizes. From the federated training output, we have the model exchange costs. What we are missing is a structured comparison against classical baselines and radio link analysis.
+Let me compute everything properly.
+Protocol Layer (Phase 4 handshake):
+ComponentPQ-LITSClassical (ECDH + ECDSA-P256)M1 (UAV to GCS)7,794 bytes~450 bytesM2 (GCS to UAV)7,794 bytes~450 bytesM3 (Key confirm)68 bytes~68 bytesTotal handshake15,656 bytes~968 bytes
+The PQ messages are roughly 16x larger. That is the well-known cost of lattice-based PQC. But now let us check if it actually matters:
+Over a typical UAV telemetry radio (SiK 915 MHz at 250 Kbps):
+
+PQ-LITS handshake transmission: 15,656 × 8 / 250,000 = 0.50 seconds
+Classical handshake transmission: 968 × 8 / 250,000 = 0.03 seconds
+
+Over a 4G/LTE link (10 Mbps typical):
+
+PQ-LITS handshake transmission: 15,656 × 8 / 10,000,000 = 0.013 seconds
+Effectively instantaneous
+
+Federated Learning Layer (Phase 5):
+From your training results:
+
+Model parameters: 443
+Model size: 1,772 bytes (1.73 KB)
+Per round (3 uploads + 1 broadcast): 4 × 1,772 = 7,088 bytes (6.92 KB)
+Total over 20 rounds: 138.44 KB
+Centralized alternative (raw telemetry): 331.36 KB
+Communication reduction: 58.2%
+
+Per-packet telemetry (post-handshake):
+
+Raw telemetry record: 12 features × 4 bytes = 48 bytes
+AES-256-GCM overhead: 12 (nonce) + 16 (tag) = 28 bytes
+Encrypted telemetry packet: 76 bytes
+At 1 Hz telemetry rate: 76 bytes/second = negligible

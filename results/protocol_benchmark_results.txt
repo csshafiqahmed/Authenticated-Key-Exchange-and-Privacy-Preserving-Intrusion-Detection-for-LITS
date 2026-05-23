@@ -1,0 +1,134 @@
+
+=================================================================
+PQ-LITS Protocol Benchmark Suite
+=================================================================
+
+Platform:   macOS-13.7.8-x86_64-i386-64bit
+Processor:  i386
+Machine:    x86_64
+Python:     3.12.3
+liboqs:     (version not exposed)
+KEM:        ML-KEM-768
+DSA:        ML-DSA-65
+Iterations: 1000
+
+Benchmarking individual operations (1000 iterations)...
+  KEM.KeyGen:   0.0327 ms
+  KEM.Enc:      0.0236 ms
+  KEM.Dec:      0.0298 ms
+  DSA.KeyGen:   0.0622 ms
+  DSA.Sign:     0.1377 ms
+  DSA.Verify:   0.0593 ms
+  SHA3-256:     0.002491 ms
+  HKDF:         0.015482 ms
+  AES-GCM.Enc:  0.008647 ms
+  AES-GCM.Dec:  0.004471 ms
+
+Benchmarking full handshake (1000 iterations)...
+  Setting up keys (one-time registration)...
+  Warming up (50 iterations)...
+  Running 1000 iterations...
+    200/1000 done...
+    400/1000 done...
+    600/1000 done...
+    800/1000 done...
+    1000/1000 done...
+
+=================================================================
+INDIVIDUAL OPERATION RESULTS
+=================================================================
+Operation               Mean (ms)     Std (ms)     Min (ms)     Max (ms)
+----------------------------------------------------------------------
+KEM.KeyGen                 0.0327       0.1056       0.0180       2.4024
+KEM.Enc                    0.0236       0.0117       0.0196       0.2114
+KEM.Dec                    0.0298       0.0530       0.0203       0.9401
+DSA.KeyGen                 0.0622       0.0577       0.0500       1.1199
+DSA.Sign                   0.1377       0.1250       0.0646       2.5577
+DSA.Verify                 0.0593       0.0527       0.0520       1.5345
+SHA3-256                   0.0025       0.0003       0.0024       0.0072
+HKDF                       0.0155       0.0075       0.0109       0.1320
+AES-GCM.Enc                0.0086       0.0092       0.0060       0.1210
+AES-GCM.Dec                0.0045       0.0009       0.0042       0.0216
+
+=================================================================
+FULL HANDSHAKE RESULTS
+=================================================================
+Phase                                          Mean (ms)   Std (ms)
+-------------------------------------------------------------------
+UAV: Construct M1 (KEM.Enc + DSA.Sign)            0.1908     0.0833
+GCS: Verify M1 (DSA.Vfy x2 + KEM.Dec)             0.1749     0.0711
+GCS: Construct M2 (KEM.Enc + DSA.Sign)            0.2185     0.0893
+UAV: Verify M2 (DSA.Vfy x2 + KEM.Dec)             0.1967     0.0621
+UAV: Key Confirm M3 (AEnc)                        0.0220     0.0703
+GCS: Verify M3 (ADec)                             0.0107     0.0038
+Total Handshake (M1+M2+M3)                        0.8152     0.2702 <<<
+
+  UAV-side total: 0.4096 ms
+  GCS-side total: 0.4040 ms
+
+=================================================================
+MESSAGE SIZES
+=================================================================
+  M1                     7794 bytes
+  M2                     7794 bytes
+  M3                       68 bytes
+  Total                 15656 bytes
+  ML-KEM-768 ek          1184 bytes
+  ML-KEM-768 ct          1088 bytes
+  ML-DSA-65 vk           1952 bytes
+  ML-DSA-65 sig          3309 bytes
+
+=================================================================
+LaTeX: Per-Operation Latency
+=================================================================
+\begin{table}[!t]
+\centering
+\caption{Per-Operation Cryptographic Latency (1000 iterations)}
+\label{tab:crypto_latency}
+\begin{tabular}{lrr}
+\hline
+\textbf{Operation} & \textbf{Mean (ms)} & \textbf{Std (ms)} \\
+\hline
+KEM.KeyGen & 0.0327 & 0.1056 \\
+KEM.Enc & 0.0236 & 0.0117 \\
+KEM.Dec & 0.0298 & 0.0530 \\
+DSA.KeyGen & 0.0622 & 0.0577 \\
+DSA.Sign & 0.1377 & 0.1250 \\
+DSA.Verify & 0.0593 & 0.0527 \\
+SHA3-256 & 0.0025 & 0.0003 \\
+HKDF & 0.0155 & 0.0075 \\
+AES-GCM.Enc & 0.0086 & 0.0092 \\
+AES-GCM.Dec & 0.0045 & 0.0009 \\
+\hline
+\end{tabular}
+\end{table}
+
+=================================================================
+LaTeX: Handshake Phases
+=================================================================
+\begin{table}[!t]
+\centering
+\caption{PQ-LITS Handshake Latency (1000 iterations)}
+\label{tab:handshake_latency}
+\begin{tabular}{lrr}
+\hline
+\textbf{Phase} & \textbf{Mean (ms)} & \textbf{Std (ms)} \\
+\hline
+UAV: Construct M1 (KEM.Enc + DSA.Sign) & 0.1908 & 0.0833 \\
+GCS: Verify M1 (DSA.Vfy x2 + KEM.Dec) & 0.1749 & 0.0711 \\
+GCS: Construct M2 (KEM.Enc + DSA.Sign) & 0.2185 & 0.0893 \\
+UAV: Verify M2 (DSA.Vfy x2 + KEM.Dec) & 0.1967 & 0.0621 \\
+UAV: Key Confirm M3 (AEnc) & 0.0220 & 0.0703 \\
+GCS: Verify M3 (ADec) & 0.0107 & 0.0038 \\
+Total Handshake (M1+M2+M3) & 0.8152 & 0.2702 \\
+\hline
+UAV-side total & 0.4096 & --- \\
+GCS-side total & 0.4040 & --- \\
+\hline
+\end{tabular}
+\end{table}
+
+=================================================================
+COMPLETE: Full handshake = 0.82 ms average
+Per-packet AES-256-GCM = 0.0086 ms
+=================================================================

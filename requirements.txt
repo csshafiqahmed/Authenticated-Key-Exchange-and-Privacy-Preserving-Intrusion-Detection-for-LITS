@@ -1,0 +1,19 @@
+# PQ-LITS: Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core ML/Data
+torch>=2.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+
+# Plotting
+matplotlib>=3.7.0
+
+# Cryptographic libraries (for protocol benchmark)
+cryptography>=41.0.0
+
+# Post-quantum cryptography (requires liboqs C library)
+# Install liboqs first: https://github.com/open-quantum-safe/liboqs
+# Then: pip install liboqs-python==0.14.1
+# liboqs-python==0.14.1

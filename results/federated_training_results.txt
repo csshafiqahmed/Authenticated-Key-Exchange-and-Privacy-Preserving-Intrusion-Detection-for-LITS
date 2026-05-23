@@ -1,0 +1,241 @@
+
+
+Device: cuda
+PyTorch version: 2.10.0+cu128
+Loading client datasets...
+  GCS_A: 5000 samples, 2100 attacks (42.0%), 2900 normal (58.0%)
+  GCS_B: 5000 samples, 1400 attacks (28.0%), 3600 normal (72.0%)
+  GCS_C: 5000 samples, 1400 attacks (28.0%), 3600 normal (72.0%)
+
+Preparing train/val/test splits per client...
+  GCS_A: train=2029 (all normal), val=1485 (1050 attacks), test=1486 (1050 attacks)
+  GCS_B: train=2520 (all normal), val=1240 (700 attacks), test=1240 (700 attacks)
+  GCS_C: train=2520 (all normal), val=1240 (700 attacks), test=1240 (700 attacks)
+
+Autoencoder parameters: 443
+=================================================================
+EXPERIMENT 1: Local-Only Training
+=================================================================
+
+--- Training GCS_A locally (100 epochs) ---
+  Epoch  10/100  Loss: 0.676994
+  Epoch  20/100  Loss: 0.555333
+  Epoch  30/100  Loss: 0.515035
+  Epoch  40/100  Loss: 0.480088
+  Epoch  50/100  Loss: 0.466409
+  Epoch  60/100  Loss: 0.457968
+  Epoch  70/100  Loss: 0.454025
+  Epoch  80/100  Loss: 0.449651
+  Epoch  90/100  Loss: 0.448524
+  Epoch 100/100  Loss: 0.444476
+  Training time: 8.0s
+  Optimal threshold: 1.207383 (val F1: 0.8237)
+  Test — Acc: 0.7867, Prec: 0.9933, Rec: 0.7029, F1: 0.8232, AUC: 0.9057
+
+--- Training GCS_B locally (100 epochs) ---
+  Epoch  10/100  Loss: 0.641980
+  Epoch  20/100  Loss: 0.576541
+  Epoch  30/100  Loss: 0.518808
+  Epoch  40/100  Loss: 0.499161
+  Epoch  50/100  Loss: 0.493342
+  Epoch  60/100  Loss: 0.485131
+  Epoch  70/100  Loss: 0.483403
+  Epoch  80/100  Loss: 0.480147
+  Epoch  90/100  Loss: 0.475258
+  Epoch 100/100  Loss: 0.472517
+  Training time: 9.9s
+  Optimal threshold: 0.611066 (val F1: 0.7034)
+  Test — Acc: 0.6887, Prec: 0.7516, Rec: 0.6700, F1: 0.7085, AUC: 0.7830
+
+--- Training GCS_C locally (100 epochs) ---
+  Epoch  10/100  Loss: 0.694537
+  Epoch  20/100  Loss: 0.494337
+  Epoch  30/100  Loss: 0.394618
+  Epoch  40/100  Loss: 0.363973
+  Epoch  50/100  Loss: 0.352684
+  Epoch  60/100  Loss: 0.344903
+  Epoch  70/100  Loss: 0.340598
+  Epoch  80/100  Loss: 0.337863
+  Epoch  90/100  Loss: 0.333578
+  Epoch 100/100  Loss: 0.334536
+  Training time: 10.3s
+  Optimal threshold: 0.472243 (val F1: 0.7636)
+  Test — Acc: 0.7710, Prec: 0.8421, Rec: 0.7314, F1: 0.7829, AUC: 0.8562
+
+--- Cross-Client Evaluation (Local Models) ---
+This reveals the non-IID weakness: a model trained on one
+client performs poorly on unseen attack types from other clients.
+
+  Model(GCS_A) → Test(GCS_B): F1 = 0.5896
+  Model(GCS_A) → Test(GCS_C): F1 = 0.6913
+  Model(GCS_B) → Test(GCS_A): F1 = 0.8578
+  Model(GCS_B) → Test(GCS_C): F1 = 0.7518
+  Model(GCS_C) → Test(GCS_A): F1 = 0.8581
+  Model(GCS_C) → Test(GCS_B): F1 = 0.6730
+
+=================================================================
+EXPERIMENT 2: Federated Learning (FedAvg, 20 rounds)
+  Differential Privacy: ENABLED (noise σ = 0.01)
+=================================================================
+  Round  1/20  Loss: 0.794205  Avg Val F1: 0.7533  [A:0.828 B:0.681 C:0.751]
+  Round  3/20  Loss: 0.506704  Avg Val F1: 0.7562  [A:0.828 B:0.693 C:0.748]
+  Round  6/20  Loss: 0.426298  Avg Val F1: 0.7651  [A:0.828 B:0.700 C:0.767]
+  Round  9/20  Loss: 0.411742  Avg Val F1: 0.7661  [A:0.828 B:0.709 C:0.761]
+  Round 12/20  Loss: 0.406244  Avg Val F1: 0.7651  [A:0.827 B:0.705 C:0.764]
+  Round 15/20  Loss: 0.401987  Avg Val F1: 0.7569  [A:0.824 B:0.700 C:0.747]
+  Round 18/20  Loss: 0.397691  Avg Val F1: 0.7502  [A:0.814 B:0.689 C:0.748]
+
+Total federated training time: 58.3s
+
+--- Federated Model: Per-Client Test Results ---
+  GCS_A: Acc=0.7645, Prec=0.9730, Rec=0.6857, F1=0.8045, AUC=0.8823
+  GCS_B: Acc=0.6669, Prec=0.7318, Rec=0.6471, F1=0.6869, AUC=0.7670
+  GCS_C: Acc=0.7597, Prec=0.8274, Rec=0.7257, F1=0.7732, AUC=0.8611
+
+=================================================================
+EXPERIMENT 3: Centralized Training (Upper Bound)
+=================================================================
+  Epoch  10/100  Loss: 0.505512
+  Epoch  20/100  Loss: 0.438211
+  Epoch  30/100  Loss: 0.426669
+  Epoch  40/100  Loss: 0.415229
+  Epoch  50/100  Loss: 0.407822
+  Epoch  60/100  Loss: 0.404638
+  Epoch  70/100  Loss: 0.402503
+  Epoch  80/100  Loss: 0.401638
+  Epoch  90/100  Loss: 0.398705
+  Epoch 100/100  Loss: 0.398065
+  Training time: 28.0s
+
+  Centralized Test — Acc: 0.7632, Prec: 0.8787, Rec: 0.7155, F1: 0.7888, AUC: 0.8535
+
+=================================================================
+COMPREHENSIVE RESULTS COMPARISON
+=================================================================
+
+Metric            Local-Only    Federated  Centralized   Fed vs Local
+--------------------------------------------------------------------
+accuracy              0.7488       0.7304       0.7632 ↓     +0.0184
+precision             0.8623       0.8441       0.8787 ↓     +0.0183
+recall                0.7014       0.6862       0.7155 ↓     +0.0152
+f1                    0.7715       0.7549       0.7888 ↓     +0.0167
+auc                   0.8483       0.8368       0.8535 ↓     +0.0115
+
+Training Time            N/A        58.3s        28.0s
+Params Shared              0    288/round     All data
+DP Protected             N/A Yes (σ=0.01)           No
+
+--- Per-Client F1 Scores ---
+Client          Local  Federated      Delta
+------------------------------------------
+GCS_A          0.8232     0.8045    -0.0187
+GCS_B          0.7085     0.6869    -0.0216
+GCS_C          0.7829     0.7732    -0.0097
+
+--- Cross-Client F1 Matrix (Local Models) ---
+Train↓ / Test→        GCS_A    GCS_B    GCS_C
+--------------------------------------------
+GCS_A                0.8232   0.5896   0.6913
+GCS_B                0.8578   0.7085   0.7518
+GCS_C                0.8581   0.6730   0.7829
+(Off-diagonal drops reveal the non-IID problem FL solves)
+
+Plots saved: pq_lits_results.png / .pdf
+
+=================================================================
+PER-ATTACK-TYPE DETECTION RATE
+=================================================================
+
+--- Local-Only ---
+Client     Attack Type         Total Detected     Rate
+------------------------------------------------------
+GCS_A      Normal (TNR)         2900            98.9%
+GCS_A      GPS Spoofing         1750            76.5%
+GCS_A      RF Jamming            350            39.4%
+GCS_B      Normal (TNR)         3600            74.8%
+GCS_B      GPS Spoofing          350            89.7%
+GCS_B      Cmd Injection        1050            58.6%
+GCS_C      Normal (TNR)         3600            80.5%
+GCS_C      GPS Spoofing          700            90.1%
+GCS_C      RF Jamming            350            52.0%
+GCS_C      Cmd Injection         350            58.0%
+
+--- Federated ---
+Client     Attack Type         Total Detected     Rate
+------------------------------------------------------
+GCS_A      Normal (TNR)         2900            95.4%
+GCS_A      GPS Spoofing         1750            74.5%
+GCS_A      RF Jamming            350            41.4%
+GCS_B      Normal (TNR)         3600            70.4%
+GCS_B      GPS Spoofing          350            90.0%
+GCS_B      Cmd Injection        1050            56.3%
+GCS_C      Normal (TNR)         3600            79.2%
+GCS_C      GPS Spoofing          700            89.6%
+GCS_C      RF Jamming            350            68.9%
+GCS_C      Cmd Injection         350            40.0%
+
+=================================================================
+COMMUNICATION OVERHEAD ANALYSIS
+=================================================================
+Model parameters:        443
+Model size:              1.73 KB (1772 bytes)
+
+Federated (20 rounds):
+  Per round (3 up + 1 down): 6.92 KB
+  Total communication:       138.44 KB
+
+Centralized (raw data):
+  Raw training data:         331.36 KB
+
+Communication reduction:     58.2%
+(Federated transmits 41.78% of what centralized requires)
+
+Differential Privacy:
+  Noise mechanism:  Gaussian (σ = 0.01)
+  Applied to:       Model weights before upload
+  Parameters noise per round: 443 values
+  Rough ε estimate: 48.45 (δ = 1e-05)
+  (Use Renyi DP accounting for tighter bounds in the paper)
+
+=================================================================
+LaTeX TABLE (copy-paste into paper)
+=================================================================
+
+\begin{table}[!t]
+\centering
+\caption{Performance Comparison of Anomaly Detection Approaches}
+\label{tab:results}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Approach} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+\hline
+Local-Only (Avg) & 0.7488 & 0.8623 & 0.7014 & 0.7715 \\
+Federated (Avg) & 0.7304 & 0.8441 & 0.6862 & 0.7549 \\
+Centralized & 0.7632 & 0.8787 & 0.7155 & 0.7888 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[!t]
+\centering
+\caption{Per-Client F1-Score Under Different Training Strategies}
+\label{tab:per_client}
+\begin{tabular}{lccc}
+\hline
+\textbf{Client} & \textbf{Local-Only} & \textbf{Federated} & \textbf{Improvement} \\
+\hline
+GCS\_A & 0.8232 & 0.8045 & -0.0187 \\
+GCS\_B & 0.7085 & 0.6869 & -0.0216 \\
+GCS\_C & 0.7829 & 0.7732 & -0.0097 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+=================================================================
+ALL EXPERIMENTS COMPLETE
+=================================================================
+Total runtime: ~128s
+Output files: pq_lits_results.png, pq_lits_results.pdf
+Next: Copy LaTeX tables into your Overleaf document.
