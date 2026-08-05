@@ -18,7 +18,7 @@ Data is NON-IID across clients:
 Runtime: ~30 seconds on Colab free tier
 Output:  3 CSV files (one per GCS client) + 1 combined CSV
 
-Author: [Your Name]
+Author: Shafiq Ahmed
 Date:   March 2026
 """
 
